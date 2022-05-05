@@ -1,4 +1,10 @@
-import { useDeferredValue, useMemo, useState } from "react";
+import {
+  ReactNode,
+  useDeferredValue,
+  useMemo,
+  useState,
+  useTransition,
+} from "react";
 
 const Normal = () => {
   const [value, setValue] = useState("");
@@ -12,7 +18,7 @@ const Normal = () => {
     );
   }, [value]);
   return (
-    <div style={{ width: "300px" }}>
+    <div style={{ width: "200px" }}>
       <div>Normal</div>
       <input value={value} onChange={(e) => setValue(e.target.value)} />
       {memo}
@@ -25,7 +31,7 @@ const Deferred = () => {
   const deferredValue = useDeferredValue(value);
   const memo = useMemo(() => {
     return (
-      <div style={{ width: "300px" }}>
+      <div style={{ width: "200px" }}>
         {new Array(10000).fill(0).map((_, index) => (
           <div key={index}>{deferredValue}</div>
         ))}
@@ -34,8 +40,37 @@ const Deferred = () => {
   }, [deferredValue]);
   return (
     <div>
-      <div>Deferred</div>
+      <div style={{ color: value !== deferredValue ? "gray" : undefined }}>
+        Deferred
+      </div>
       <input value={value} onChange={(e) => setValue(e.target.value)} />
+      {memo}
+    </div>
+  );
+};
+const Transition = () => {
+  const [isPending, startTransition] = useTransition();
+  const [value, setValue] = useState("");
+  const [memo, setMemo] = useState<ReactNode>();
+
+  return (
+    <div>
+      <div style={{ color: isPending ? "gray" : undefined }}>Transition</div>
+      <input
+        value={value}
+        onChange={(e) => {
+          setValue(e.target.value);
+          startTransition(() => {
+            setMemo(
+              <div style={{ width: "200px" }}>
+                {new Array(10000).fill(0).map((_, index) => (
+                  <div key={index}>{e.target.value}</div>
+                ))}
+              </div>
+            );
+          });
+        }}
+      />
       {memo}
     </div>
   );
@@ -52,6 +87,7 @@ const Page = () => {
       <div style={{ display: "flex" }}>
         <Normal />
         <Deferred />
+        <Transition />
       </div>
     </>
   );
