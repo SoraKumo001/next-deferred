@@ -42,10 +42,18 @@ const Deferred = () => {
 };
 const Page = () => {
   return (
-    <div style={{ display: "flex" }}>
-      <Normal />
-      <Deferred />
-    </div>
+    <>
+      <div>
+        Source code:{" "}
+        <a href="https://github.com/SoraKumo001/next-deferred">
+          https://github.com/SoraKumo001/next-deferred
+        </a>
+      </div>
+      <div style={{ display: "flex" }}>
+        <Normal />
+        <Deferred />
+      </div>
+    </>
   );
 };
 
